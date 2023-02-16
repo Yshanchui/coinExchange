@@ -1,16 +1,21 @@
 package com.shanchui.filter;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
@@ -42,7 +47,19 @@ public class JwtCheckFilter implements GlobalFilter, Ordered {
         if(hasKey!=null && hasKey){
             return chain.filter(exchange); //token有效，直接放行
         }
-        return buildNoAuthorizationResult();
+        return buildNoAuthorizationResult(exchange);
+    }
+
+    /*给用户响应一个没有token的错误*/
+    private Mono<Void> buildNoAuthorizationResult(ServerWebExchange exchange) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.getHeaders().set("Content-Type", "application/json;charset=UTF-8");
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("error","NoAuthorization");
+        jsonObject.put("errorMsg","Token is Null or Error");
+        DataBuffer wrap = response.bufferFactory().wrap(jsonObject.toJSONString().getBytes());
+        return response.writeWith(Flux.just(wrap));
     }
 
     /*
