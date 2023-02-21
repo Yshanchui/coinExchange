@@ -1,6 +1,7 @@
 package com.shanchui.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Qualifier("userServiceDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -39,8 +41,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient("coin-api") // 客户端名称
                 .secret(passwordEncoder.encode("coin-secret")) // 客户端密码
                 .scopes("all") // 客户端的权限范围
-                .accessTokenValiditySeconds(3600) // token的有效期
-                .refreshTokenValiditySeconds(7*3600); // 刷新token的有效期
+                .authorizedGrantTypes("password","refresh_token") // 客户端的授权模式
+                .accessTokenValiditySeconds(7*24*3600) // token的有效期
+                .refreshTokenValiditySeconds(30*24*3600)
+                .and()
+                .withClient("inside-app")
+                .secret(passwordEncoder.encode("inside-secret"))
+                .authorizedGrantTypes("client_credentials")
+                .scopes("all")
+                .accessTokenValiditySeconds(7*24*3600); // 刷新token的有效期
         super.configure(clients);
     }
 
