@@ -17,6 +17,7 @@
     <modules>
         <module>coin-iaas</module>
         <module>coin-iaas/gateway-server</module>
+        <module>coin-common</module>
     </modules>
     <properties>
         <java.version>11</java.version>
