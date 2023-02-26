@@ -1,0 +1,31 @@
+package com.shanchui.feign;
+
+import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+@Data
+public class JwtToken {
+    /**
+     * access_token
+     */
+    @JsonProperty("access_token")
+    private String accessToken;
+    /**
+     * token类型
+     */
+    @JsonProperty("token_type")
+    private String tokenType;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+    @JsonProperty("expires_in")
+    private Long expiresIn;
+    /**
+     * 权限范围
+     */
+    private String scope;
+    /**
+     * 颁发的凭证
+     */
+    private String jti;
+}

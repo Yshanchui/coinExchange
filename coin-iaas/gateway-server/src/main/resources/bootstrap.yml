@@ -14,9 +14,11 @@ spring:
           lower-case-service-id: true
       routes:
         - id: admin-service_router
-          uri: lb://admin-server
+          uri: lb://admin-service
           predicates:
             - Path=/admin/**
+          filters:
+            - StripPrefix=1
         - id: test_router
           uri: https://www.aliyun.com
           predicates:

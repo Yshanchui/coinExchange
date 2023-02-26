@@ -62,13 +62,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailsService)
                 .tokenStore(jwtTokenStore())
                 .tokenEnhancer(jwtAccessTokenConverter());
-//                        .tokenStore(redisTokenStore());
         super.configure(endpoints);
     }
 
     public JwtTokenStore jwtTokenStore(){
-        JwtTokenStore jwtTokenStore = new JwtTokenStore(jwtAccessTokenConverter());
-        return jwtTokenStore;
+       return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
     public JwtAccessTokenConverter jwtAccessTokenConverter(){
@@ -80,7 +78,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         tokenConverter.setKeyPair(keyStoreKeyFactory.getKeyPair("coinexchange", "coinexchange".toCharArray()));
         return tokenConverter;
     }
-//    public TokenStore redisTokenStore(){
-//        return new RedisTokenStore(redisConnectionFactory);
-//    }
+
 }

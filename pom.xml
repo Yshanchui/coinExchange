@@ -18,6 +18,14 @@
         <module>coin-iaas</module>
         <module>coin-iaas/gateway-server</module>
         <module>coin-common</module>
+        <module>coin-admin</module>
+        <module>coin-chan</module>
+        <module>coin-finance</module>
+        <module>coin-member</module>
+        <module>coin-statistics</module>
+        <module>coin-task</module>
+        <module>exchange-engine</module>
+        <module>match-engine</module>
     </modules>
     <properties>
         <java.version>11</java.version>

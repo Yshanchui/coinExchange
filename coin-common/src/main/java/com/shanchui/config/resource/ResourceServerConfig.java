@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.util.FileCopyUtils;
 
+import java.nio.charset.StandardCharsets;
+
 @Configuration
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -25,6 +27,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                          .sessionManagement().disable()
                          .authorizeRequests()
                          .antMatchers( //放行路径
+                                 "/login",
                                  "/v2/api-docs",
                                  "/swagger-resources/configuration/ui",
                                  "/swagger-resources",
@@ -48,11 +51,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public JwtAccessTokenConverter accessTokenConverter() {
         //resporce 验证token(公钥) authorization 产生token(私钥)
         JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
+        ClassPathResource classPathResource = new ClassPathResource("coinexchange.txt");
         String s = null;
         try {
-            ClassPathResource classPathResource = new ClassPathResource("coinexchange.pub");
             byte[] bytes = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
-            s = new String(bytes, "UTF-8");
+            s = new String(bytes, StandardCharsets.UTF_8);
         }catch (Exception e) {
             e.printStackTrace();
         }
