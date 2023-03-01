@@ -57,15 +57,31 @@ public class SysPrivilegeController {
     public R  add(@RequestBody @Validated SysPrivilege sysPrivilege) {
 
         //新增时，我们需要给我们的新增对象填充一些属性
-        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        sysPrivilege.setCreateBy(Long.valueOf(userIdStr));
-        sysPrivilege.setCreated(new Date());
-        sysPrivilege.setLastUpdateTime(new Date());
+//        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+//        sysPrivilege.setCreateBy(Long.valueOf(userIdStr));
+//        sysPrivilege.setCreated(new Date());
+//        sysPrivilege.setLastUpdateTime(new Date());
+
         boolean save = sysPrivilegeService.save(sysPrivilege);
         if(save){
             return R.ok("权限新增成功");
         }else {
             return R.fail("权限新增失败");
+        }
+    }
+
+    @PatchMapping
+    @ApiOperation(value = "权限的修改")
+    @PreAuthorize("hasAuthority('sys_privilege_update')")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sysPrivilege", value = "权限的实体类")
+    })
+    public R  update(@RequestBody @Validated SysPrivilege sysPrivilege) {
+        boolean save = sysPrivilegeService.updateById(sysPrivilege);
+        if(save){
+            return R.ok("权限修改成功");
+        }else {
+            return R.fail("权限修改失败");
         }
     }
 }

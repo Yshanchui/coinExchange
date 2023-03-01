@@ -27,7 +27,7 @@ public class AutoFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         Long userId = getUserId();
-        this.strictInsertFill(metaObject, "lastUpdateTime", Date.class, new Date());
+        this.strictInsertFill(metaObject, "lastUpdateTime", Date.class, new Date()); //自动填充更新时间
         // 创建人的填充
         this.strictInsertFill(metaObject, "createBy", Long.class, userId);
         this.strictInsertFill(metaObject, "created", Date.class, new Date());

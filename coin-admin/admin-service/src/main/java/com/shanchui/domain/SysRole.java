@@ -1,15 +1,14 @@
 package com.shanchui.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 /**
     * 角色
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "sys_role")
-public class SysRole {
+public class  SysRole {
     /**
      * 主键
      */
@@ -32,6 +31,7 @@ public class SysRole {
      */
     @TableField(value = "`name`")
     @ApiModelProperty(value="名称")
+    @NotNull(message = "角色名称不能为空")
     private String name;
 
     /**
@@ -39,6 +39,7 @@ public class SysRole {
      */
     @TableField(value = "code")
     @ApiModelProperty(value="代码")
+    @NotNull
     private String code;
 
     /**
@@ -51,7 +52,7 @@ public class SysRole {
     /**
      * 创建人
      */
-    @TableField(value = "create_by")
+    @TableField(value = "create_by",fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建人")
     private Long createBy;
 
@@ -72,14 +73,14 @@ public class SysRole {
     /**
      * 创建时间
      */
-    @TableField(value = "created")
+    @TableField(value = "created",fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建时间")
     private Date created;
 
     /**
      * 修改时间
      */
-    @TableField(value = "last_update_time")
+    @TableField(value = "last_update_time",fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value="修改时间")
     private Date lastUpdateTime;
 }
