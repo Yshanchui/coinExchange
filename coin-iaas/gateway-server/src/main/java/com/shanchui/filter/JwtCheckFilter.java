@@ -7,7 +7,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,8 +43,8 @@ public class JwtCheckFilter implements GlobalFilter, Ordered {
         if(StringUtils.isEmpty(token)){
             return buildNoAuthorizationResult(exchange);
         }
-        Boolean hasKey = stringRedisTemplate.hasKey(token);
-        if(hasKey!=null && hasKey){
+        Boolean hasToken = stringRedisTemplate.hasKey(token);
+        if(hasToken !=null && hasToken){
             return chain.filter(exchange); //token有效，直接放行
         }
         return buildNoAuthorizationResult(exchange);
@@ -53,7 +53,7 @@ public class JwtCheckFilter implements GlobalFilter, Ordered {
     /*给用户响应一个没有token的错误*/
     private Mono<Void> buildNoAuthorizationResult(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
-        response.getHeaders().set("Content-Type", "application/json;charset=UTF-8");
+        response.getHeaders().set("Content-Type", "application/json");
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("error","NoAuthorization");
@@ -66,16 +66,13 @@ public class JwtCheckFilter implements GlobalFilter, Ordered {
     * 从请求头里面获取用户的token*/
     private String getUserToken(ServerWebExchange exchange) {
         String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        return token == null ? null : token.replace("Bearer ", "");
+        return token == null ? null : token.replace("bearer ", "");
     }
 
     /*判断该接口是否需要token*/
     private boolean isRequsetToken(ServerWebExchange exchange) {
         String path = exchange.getRequest().getURI().getPath();
-        if(noRequireTokenUris.contains(path)){
-            return false; //不需要token
-        }
-        return Boolean.TRUE; //需要token
+        return !noRequireTokenUris.contains(path);
     }
 
     /*
