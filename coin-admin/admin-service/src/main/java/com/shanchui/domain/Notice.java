@@ -1,9 +1,6 @@
 package com.shanchui.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -69,14 +66,14 @@ public class Notice {
     /**
      * 最后修改时间
      */
-    @TableField(value = "last_update_time")
+    @TableField(value = "last_update_time" , fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value="最后修改时间")
     private Date lastUpdateTime;
 
     /**
      * 创建日期
      */
-    @TableField(value = "created")
+    @TableField(value = "created" ,fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建日期")
     private Date created;
 }
