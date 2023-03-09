@@ -1,8 +1,10 @@
 package com.shanchui.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.shanchui.domain.SysMenu;
 import com.shanchui.domain.SysPrivilege;
+import com.shanchui.model.RolePrivilegesParam;
 import com.shanchui.service.SysMenuService;
 import com.shanchui.service.SysPrivilegeService;
 import com.shanchui.service.SysRoleService;
@@ -19,6 +21,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shanchui.mapper.SysRolePrivilegeMapper;
 import com.shanchui.domain.SysRolePrivilege;
 import com.shanchui.service.SysRolePrivilegeService;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class SysRolePrivilegeServiceImpl extends ServiceImpl<SysRolePrivilegeMapper, SysRolePrivilege> implements SysRolePrivilegeService{
 
@@ -27,6 +31,10 @@ public class SysRolePrivilegeServiceImpl extends ServiceImpl<SysRolePrivilegeMap
 
     @Autowired
     private SysPrivilegeService sysPrivilegeService;
+
+    @Autowired
+    private SysRolePrivilegeService sysRolePrivilegeService;
+
     @Override
     public List<SysMenu> findSysMenuAndPrivilege(Long roleId) {
         List<SysMenu> list = sysMenuService.list(); //查询所有菜单
@@ -43,6 +51,33 @@ public class SysRolePrivilegeServiceImpl extends ServiceImpl<SysRolePrivilegeMap
             subMenus.addAll(getChildMenus(rootMenu.getId(),roleId,list));
         }
         return subMenus;
+    }
+
+    /**
+     * 授权
+     * @param rolePrivilegesParame
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean grantPrivileges(RolePrivilegesParam rolePrivilegesParame) {
+        Long roleId = rolePrivilegesParame.getRoleId(); // 角色id
+        //1 删除当前角色的所有权限
+        sysRolePrivilegeService.remove(new LambdaQueryWrapper<SysRolePrivilege>().eq(SysRolePrivilege::getRoleId,roleId));
+        List<Long> privilegeIds = rolePrivilegesParame.getPrivilegeIds();
+        if(!CollectionUtil.isEmpty(privilegeIds)){
+            List<SysRolePrivilege> sysRolePrivileges = new ArrayList<>();
+            for (Long privilegeId : privilegeIds) {
+                SysRolePrivilege sysRolePrivilege = new SysRolePrivilege();
+                sysRolePrivilege.setRoleId(roleId);
+                sysRolePrivilege.setPrivilegeId(privilegeId);
+                sysRolePrivileges.add(sysRolePrivilege);
+            }
+            //2 重新授权
+            boolean b = sysRolePrivilegeService.saveBatch(sysRolePrivileges);
+            return b;
+        }
+        return true;
     }
 
     /**
