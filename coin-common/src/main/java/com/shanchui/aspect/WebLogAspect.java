@@ -107,7 +107,11 @@ public class WebLogAspect {
         //方法的形参名称
         String[] parameterNames = localVariableTableParameterNameDiscoverer.getParameterNames(method);
         for (int i = 0; i < parameterNames.length; i++) {
-            methodParametersWithValues.put(parameterNames[i], args[i]);
+            if(parameterNames[i].equals("password") || parameterNames[i].equals("file")){
+                methodParametersWithValues.put(parameterNames[i], "受限的支持类型");
+            }else{
+                methodParametersWithValues.put(parameterNames[i], args[i]);
+            }
         }
         return methodParametersWithValues;
     }
