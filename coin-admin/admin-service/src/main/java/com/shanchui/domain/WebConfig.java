@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /**
     * 网站配置信息
     */
@@ -29,6 +31,7 @@ public class WebConfig {
      */
     @TableField(value = "`type`")
     @ApiModelProperty(value="分组, LINK_BANNER ,WEB_BANNER")
+    @NotBlank
     private String type;
 
     /**
@@ -36,6 +39,7 @@ public class WebConfig {
      */
     @TableField(value = "`name`")
     @ApiModelProperty(value="名称")
+    @NotBlank
     private String name;
 
     /**
@@ -43,6 +47,7 @@ public class WebConfig {
      */
     @TableField(value = "`value`")
     @ApiModelProperty(value="值")
+    @NotBlank
     private String value;
 
     /**
@@ -71,5 +76,5 @@ public class WebConfig {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value="是否使用 0 否 1是")
-    private Boolean status;
+    private Integer status;
 }
