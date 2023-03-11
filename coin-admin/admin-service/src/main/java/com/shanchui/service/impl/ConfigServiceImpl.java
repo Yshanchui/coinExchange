@@ -18,7 +18,7 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, Config> impleme
     public Page<Config> findByPage(Page<Config> page, String name, String type, String code) {
         return page(page, new LambdaQueryWrapper<Config>()
                 .like(!StringUtils.isEmpty(name), Config::getName, name)
-                .like(!StringUtils.isEmpty(name), Config::getType,type)
-                .like(!StringUtils.isEmpty(name), Config::getCode,code));
+                .like(!StringUtils.isEmpty(type), Config::getType, type)
+                .like(!StringUtils.isEmpty(code), Config::getCode, code));
     }
 }
