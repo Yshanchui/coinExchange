@@ -1,9 +1,6 @@
 package com.shanchui.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -62,18 +59,22 @@ public class UserAddress {
     /**
      * 更新时间
      */
-    @TableField(value = "last_update_time")
+    @TableField(value = "last_update_time",fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value="更新时间")
     private Date lastUpdateTime;
 
     /**
      * 创建时间
      */
-    @TableField(value = "created")
+    @TableField(value = "created",fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建时间")
     private Date created;
 
     @TableField(value = "markid")
     @ApiModelProperty(value="")
     private Long markid;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value="币种名称")
+    private String coinName = "测试币种";
 }

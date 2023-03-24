@@ -11,9 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/userBanks")
@@ -29,8 +27,28 @@ public class UserBankcontroller {
             @ApiImplicitParam(name = "usrId", value = "用户ID"),
     })
     @PreAuthorize("hasAuthority('user_bank_query')")
-    public R<Page<UserBank>> findbyPage(Page<UserBank> page,Long usrId) {
+    public R<Page<UserBank>> findbyPage(Page<UserBank> page, Long usrId) {
         page.addOrder(OrderItem.desc("last_update_time"));
-        return R.ok(userBankService.findByPage(page,usrId));
+        return R.ok(userBankService.findByPage(page, usrId));
+    }
+
+    @PostMapping("/status")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户银行卡ID"),
+            @ApiImplicitParam(name = "status", value = "状态"),
+    })
+    public R updateStaus(Long id, Byte status) {
+        UserBank userBank = new UserBank();
+        userBank.setId(id);
+        userBank.setStatus(status);
+        return userBankService.updateById(userBank) ? R.ok ("修改成功") : R.fail("修改失败");
+    }
+
+    @PatchMapping
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userBank", value = "用户银行卡"),
+    })
+    public R update(@RequestBody UserBank userBank) {
+        return userBankService.updateById(userBank) ? R.ok("修改成功") : R.fail("修改失败");
     }
 }
